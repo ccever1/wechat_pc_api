@@ -1,6 +1,5 @@
 ﻿# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-
 import wechat
 import json
 import time
@@ -9,11 +8,8 @@ import code
 import random
 import os
 
-#f = open('testroom.txt', 'r')
-f = open('room.txt', 'r')
-room = f.read()
-f.close()
-room_list=room.split("\n")
+
+
 root = os.getcwd()
 img1=root+'\e1.jpg'
 img2=root+'\m2.jpg'
@@ -37,9 +33,21 @@ def on_recv(client_id, message_type, message_data):
     if message_type == MessageType.MT_DATA_CHATROOMS_MSG:
         for message in message_data:
             print('[群] wxid: {0}, nickname: {1} '.format(message['wxid'],message['nickname']));
+            
+            f = open('testroom.txt', 'r')
+            #f = open('room.txt', 'r')
+            room = f.read()
+            f.close()
+            room_list=room.split("\n")
+            
             if message['wxid'] in room_list :
-                #wechat_manager.send_text(client_id, message['wxid'], 'abcddd')
-                wechat_manager.send_image(1, message['wxid'], currnet_img)
+                if currnet_img == '3':
+                    ft = open('t3.txt', 'rb')
+                    fttext = ft.read()
+                    ft.close()
+                    wechat_manager.send_text(client_id, message['wxid'], fttext)
+                else:
+                    wechat_manager.send_image(1, message['wxid'], currnet_img)
                 print('sleep')
                 time.sleep(random.randint(10,20))
     elif message_type == MessageType.MT_RECV_MINIAPP_MSG:
@@ -57,6 +65,9 @@ def on_recv(client_id, message_type, message_data):
             elif message_data['msg'] == '2' :
                 #print('img2')
                 currnet_img=img2
+                wechat_manager.get_chatrooms(1)
+            elif message_data['msg'] == '3' :
+                currnet_img='3'
                 wechat_manager.get_chatrooms(1)
             else:
                 pass
@@ -88,7 +99,6 @@ class LoginTipBot(wechat.CallbackHandler):
 
 if __name__ == "__main__":
     bot = LoginTipBot()
-
     # 添加回调实例对象
     wechat_manager.add_callback_handler(bot)
     wechat_manager.manager_wechat(smart=True)
