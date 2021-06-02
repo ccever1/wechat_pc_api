@@ -42,7 +42,7 @@ def on_recv(client_id, message_type, message_data):
             
             if message['wxid'] in room_list :
                 if currnet_img == '3':
-                    ft = open('t3.txt', 'rb')
+                    ft = open('t3.txt', 'r',encoding='utf8')
                     fttext = ft.read()
                     ft.close()
                     wechat_manager.send_text(client_id, message['wxid'], fttext)
